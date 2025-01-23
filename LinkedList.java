@@ -273,7 +273,12 @@ public class LinkedList {
 	 * A textual representation of this list, for debugging.
 	 */
 	public String toString() {
-		//// Replace the following statement with your code
-		return "";
+	ListIterator itr = this.iterator();
+	String str = "";
+	while (itr.hasNext()) {
+		str += "(" + itr.current.block.baseAddress + " , " + itr.current.block.length + ") ";
+		itr.next();
+	}
+	return str;
 	}
 }

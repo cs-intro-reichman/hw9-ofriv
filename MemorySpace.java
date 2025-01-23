@@ -57,30 +57,29 @@ public class MemorySpace {
 	 *        the length (in words) of the memory block that has to be allocated
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
-	public int malloc(int length) {		
-		Node current = freeList.getFirst();
-		while(current != freeList.getLast())
-		{
+	public int malloc(int length) {
+		Node current = this.freeList.getFirst();
+		if (current == null) {
+			return -1;
+		}
+		while (current != null && current.block.length < length) {
 			current = current.next;
 		}
-		if(current.block.length == length)
-		{
-			MemoryBlock m1 = new MemoryBlock(current.block.baseAddress, length);
-			freeList.remove(current);
-			allocatedList.addLast(m1);
+		if (current == null) {
+			return -1;
 		}
-		else if(current.block.length > length)
-		{
-			MemoryBlock m1 = new MemoryBlock(current.block.baseAddress, length);
-			current.block.length -= length;
+		MemoryBlock m1 = new MemoryBlock(current.block.baseAddress, length);
+	
+		if (current.block.length == length) {
+			this.freeList.remove(current);
+		} else {
 			current.block.baseAddress += length;
-			allocatedList.addLast(m1);
-			return m1.baseAddress;
+			current.block.length -= length;
 		}
-		
-		return -1;
+		this.allocatedList.addLast(m1);
+		return m1.baseAddress;
 	}
-
+	
 	/**
 	 * Frees the memory block whose base address equals the given address.
 	 * This implementation deletes the block whose base address equals the given 
@@ -97,15 +96,15 @@ public class MemorySpace {
 					"index must be between 0 and size");
 		}
 		else{
-		while(current.block.baseAddress != address && current != allocatedList.getLast())
-		{
+			while(current.block.baseAddress != address && current != allocatedList.getLast())
+			{
 			current = current.next;
-		}
-		if(current.block.baseAddress == address)
-		{
-		allocatedList.remove(current.block);
-		freeList.addLast(current.block);
-		}
+			}
+			if(current.block.baseAddress == address)
+			{
+			allocatedList.remove(current.block);
+			freeList.addLast(current.block);
+			}
 		}
 	}
 	
