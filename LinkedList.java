@@ -242,39 +242,12 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public void remove(int index) {
-		Node current = this.getFirst();
 		if (index < 0 || index >= size) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
-		else if(index == 0)
-		{
-			this.first = this.getFirst().next;
-			if(this.getFirst() == null)
-			{
-				this.last = null;
-			}
-		}
-		else if(index == this.getSize()-1)
-		{
-			for(int i = 0; i < index; i++)
-			{
-				current = current.next;
-			}
-			current.next = null;
-			this.last = current;
-		}
-		else{
-		int counter = 0;
-		while(counter != index)
-		{
-			current = current.next;
-			counter++;
-		}
-		current.next = current.next.next;
-		}
-		this.size--;
-		
+		Node current = getNode(index);
+		remove(current);
 	}
 
 	/**
@@ -285,7 +258,8 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-		//// Write your code here
+		Node current = getNode(indexOf(block));
+		remove(current);
 	}	
 
 	/**

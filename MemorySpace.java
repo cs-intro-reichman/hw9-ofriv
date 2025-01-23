@@ -58,7 +58,26 @@ public class MemorySpace {
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
 	public int malloc(int length) {		
-		//// Replace the following statement with your code
+		Node current = freeList.getFirst();
+		while(current != freeList.getLast())
+		{
+			current = current.next;
+		}
+		if(current.block.length == length)
+		{
+			MemoryBlock m1 = new MemoryBlock(current.block.baseAddress, length);
+			freeList.remove(current);
+			allocatedList.addLast(m1);
+		}
+		else if(current.block.length > length)
+		{
+			MemoryBlock m1 = new MemoryBlock(current.block.baseAddress, length);
+			current.block.length -= length;
+			current.block.baseAddress += length;
+			allocatedList.addLast(m1);
+			return m1.baseAddress;
+		}
+		
 		return -1;
 	}
 
@@ -71,7 +90,23 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		//// Write your code here
+		Node current = allocatedList.getFirst();
+		if(allocatedList.getSize() == 0)
+		{
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
+		else{
+		while(current.block.baseAddress != address && current != allocatedList.getLast())
+		{
+			current = current.next;
+		}
+		if(current.block.baseAddress == address)
+		{
+		allocatedList.remove(current.block);
+		freeList.addLast(current.block);
+		}
+		}
 	}
 	
 	/**
@@ -88,7 +123,6 @@ public class MemorySpace {
 	 * In this implementation Malloc does not call defrag.
 	 */
 	public void defrag() {
-		/// TODO: Implement defrag test
-		//// Write your code here
+		
 	}
 }
